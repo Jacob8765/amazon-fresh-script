@@ -1,0 +1,29 @@
+{
+    "config": {
+        "useHeadlessMode": false,
+        "zipCode": "33157",
+        "baseURL": "https://amazon.com",
+        "minimumDiscount": 35
+    },
+
+    "selectors": {
+        "openZipCodeBox": "#nav-global-location-popover-link",
+        "zipCodeInput": "[id*=ZipUpdateInput]",
+        "applyZipCodeButton": "span[id*=ZipUpdate] > span > input",
+        "closePopupButton": "[class~=a-button-close]",
+        "item": "div[data-component-type=s-search-result]",
+        "slashedPrice": "[data-a-strike=true] > span",
+        "price": "span.a-price > span.a-offscreen",
+        "link": "h2 > a.a-link-normal",
+        "name": "h2 > a.a-link-normal > span"
+    },
+
+    "categoryLinks": [
+        "/s?i=grocery&bbn=10329849011&rh=n%3A10329849011%2Cn%3A16310101%2Cn%3A371469011&s=featured-rank",
+        "/s?i=grocery&bbn=10329849011&rh=n%3A16310101%2Cn%3A6459122011%2Crh%3Dn%3A10329849011&s=featured-rank",
+        "/s?i=grocery&bbn=10329849011&rh=n%3A10329849011%2Cn%3A16310101%2Cn%3A18773724011&s=featured-rank",
+        "/s?i=grocery&bbn=10329849011&rh=n%3A10329849011%2Cn%3A16310101%2Cn%3A371460011&s=featured-rank",
+        "/s?i=grocery&bbn=10329849011&rh=n%3A10329849011%2Cn%3A16310101%2Cn%3A16318751&s=featured-rank",
+        "/s?i=grocery&bbn=10329849011&s=featured-rank"
+    ]
+}
