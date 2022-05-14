@@ -3,11 +3,22 @@ const constants = require("./constants.json");
 const CSVManager = require("./CSVManager");
 
 (async () => {
-    const browser = await puppeteer.launch({ headless: constants.config.useHeadlessMode, executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", args: ["--blink-settings=imagesEnabled=false"] }); //launch the puppeteer window
+    const browser = await puppeteer.launch({ headless: constants.config.useHeadlessMode, executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", /*args: ["--blink-settings=imagesEnabled=false"]*/ }); //launch the puppeteer window
     const page = await browser.newPage(); //open a new page in the puppeteer browser
     await page.setViewport({ width: 1500, height: 800 }); //set a static frame size so that the layout doesn't change with different devices and afffect the web scraping
     page.on('console', consoleObj => consoleObj.text().substring(0,5) == "Found" ? console.log(consoleObj.text()) : null); //otherwise console.log won't work in page.evaulate because it runs it on the client side
     console.log("Browser started");
+
+		//block any images from loading, saves bandwidth & cpu
+		await page.setRequestInterception(true)
+		page.on('request', (req) => {
+			if (req.resourceType() === 'image') {
+				req.abort()
+			} else {
+				req.continue()
+			}
+		})
+
 
     await enterZipCode(page)
 
@@ -72,14 +83,19 @@ const CSVManager = require("./CSVManager");
 const enterZipCode = async (page) => {
     await page.goto("https://amazon.com/fresh"); //navigate to any page. this will prompt the browser for a zipcode
     await page.click(constants.selectors.openZipCodeBox); //open the zipcode box
+
     await page.waitForSelector(constants.selectors.zipCodeInput, {
         visible: true,
     }); //wait for the input field to render 
 
-    await page.click(constants.selectors.zipCodeInput)
+    await page.focus(constants.selectors.zipCodeInput)
     await page.keyboard.type(constants.config.zipCode)
+    await page.waitForTimeout(500) //probably shouldn't be needed but it
+
     await page.click(constants.selectors.applyZipCodeButton)
-    await page.click(constants.selectors.closePopupButton); //We need to close the popup for the zipcode change to actually take effect
+    await page.waitForTimeout(500)
+
+    //await page.click(constants.selectors.closePopupButton); //We need to close the popup for the zipcode change to actually take effect
 
     console.log("Successfully entered zipcode");
 }

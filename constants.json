@@ -9,7 +9,7 @@
     "selectors": {
         "openZipCodeBox": "#nav-global-location-popover-link",
         "zipCodeInput": "[id*=ZipUpdateInput]",
-        "applyZipCodeButton": "span[id*=ZipUpdate] > span > input",
+        "applyZipCodeButton": "span[id*=ZipUpdate] > span > span",
         "closePopupButton": "[class~=a-button-close]",
         "item": "div[data-component-type=s-search-result]",
         "slashedPrice": "[data-a-strike=true] > span",
