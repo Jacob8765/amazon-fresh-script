@@ -9,16 +9,15 @@ const CSVManager = require("./CSVManager");
     page.on('console', consoleObj => consoleObj.text().substring(0,5) == "Found" ? console.log(consoleObj.text()) : null); //otherwise console.log won't work in page.evaulate because it runs it on the client side
     console.log("Browser started");
 
-		//block any images from loading, saves bandwidth & cpu
-		await page.setRequestInterception(true)
-		page.on('request', (req) => {
-			if (req.resourceType() === 'image') {
-				req.abort()
-			} else {
-				req.continue()
-			}
-		})
-
+    //block any images from loading, saves bandwidth & cpu
+    await page.setRequestInterception(true)
+    page.on('request', (req) => {
+        if (req.resourceType() === 'image') {
+            req.abort()
+        } else {
+            req.continue()
+        }
+    })
 
     await enterZipCode(page)
 
@@ -31,7 +30,12 @@ const CSVManager = require("./CSVManager");
         for (let pageCounter = 1; ; pageCounter++) {
             try {
                 await page.goto(`${link}&page=${pageCounter}`);
-                await page.waitForSelector(constants.selectors.item); //wait for the page to render before continuing
+
+                try {
+                    await page.waitForSelector(constants.selectors.item, {timeout:2000}); //wait for the page to render before continuing
+                } catch { 
+                    break //Exit the loop if there aren't any more pages in this category
+                }
 
                 let data = await page.evaluate((constants) => { //pass the constants variable so that we can access it inside the function
                     let items = document.querySelectorAll(constants.selectors.item);
@@ -61,8 +65,9 @@ const CSVManager = require("./CSVManager");
                         firstItemName
                     }
                 }, constants)
-        
-                if (!data.isFullPage || (previousPageFirstItemName === data.firstItemName)) {
+
+                if (previousPageFirstItemName === data.firstItemName) {
+                    console.log("repeated page")
                     break //if this page is the last in the category, we need to exit the loop
                 }
         
@@ -73,7 +78,6 @@ const CSVManager = require("./CSVManager");
                 break //exit the loop if the page fails to load or there aren't any products
             }
         }
-            
     }
 
     CSVManager.exportData(productArray);
@@ -94,8 +98,6 @@ const enterZipCode = async (page) => {
 
     await page.click(constants.selectors.applyZipCodeButton)
     await page.waitForTimeout(500)
-
-    //await page.click(constants.selectors.closePopupButton); //We need to close the popup for the zipcode change to actually take effect
 
     console.log("Successfully entered zipcode");
 }
