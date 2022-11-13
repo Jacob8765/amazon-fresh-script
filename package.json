@@ -9,6 +9,6 @@
   "author": "Jacob Schuster",
   "license": "ISC",
   "dependencies": {
-    "puppeteer": "^8.0.0"
+    "puppeteer-core": "^19.0.0"
   }
 }

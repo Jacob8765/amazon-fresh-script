@@ -1,4 +1,4 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
 const constants = require("./constants.json");
 const CSVManager = require("./CSVManager");
 
@@ -9,17 +9,18 @@ const CSVManager = require("./CSVManager");
     page.on('console', consoleObj => consoleObj.text().substring(0,5) == "Found" ? console.log(consoleObj.text()) : null); //otherwise console.log won't work in page.evaulate because it runs it on the client side
     console.log("Browser started");
 
+    const enteredZipCode = await enterZipCode(page)
+
     //block any images from loading, saves bandwidth & cpu
     await page.setRequestInterception(true)
     page.on('request', (req) => {
-        if (req.resourceType() === 'image') {
+        //console.log(req.resourceType())
+        if (req.resourceType() === 'image' || req.resourceType() === "stylesheet" || req.resourceType === "script" || req.resourceType() === "fetch") {
             req.abort()
         } else {
             req.continue()
         }
     })
-
-    await enterZipCode(page)
 
     var productArray = []
 
@@ -58,7 +59,7 @@ const CSVManager = require("./CSVManager");
                             }
                         }
                     })
-        
+
                     return {
                         products: discountedProducts,
                         isFullPage: items.length === 24, //there are 24 items in a full page, so if there are less than that we know this is the last page
@@ -85,7 +86,7 @@ const CSVManager = require("./CSVManager");
 })();
 
 const enterZipCode = async (page) => {
-    await page.goto("https://amazon.com/fresh"); //navigate to any page. this will prompt the browser for a zipcode
+    await page.goto("https://amazon.com/fresh"); //navigate to any page.
     await page.click(constants.selectors.openZipCodeBox); //open the zipcode box
 
     await page.waitForSelector(constants.selectors.zipCodeInput, {
@@ -97,12 +98,7 @@ const enterZipCode = async (page) => {
     await page.waitForTimeout(500) //probably shouldn't be needed but it
 
     await page.click(constants.selectors.applyZipCodeButton)
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(500) //hack lol
 
-    console.log("Successfully entered zipcode");
+    return true
 }
-
-/*const printResults = (arr) => {
-    let temp = arr.sort((a, b) => b.percentOff - a.percentOff)
-    console.log(temp)
-}*/
