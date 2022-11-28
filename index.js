@@ -93,9 +93,11 @@ const enterZipCode = async (page) => {
         visible: true,
     }); //wait for the input field to render 
 
+    await page.waitForTimeout(500) //probably shouldn't be needed but it
+
     await page.focus(constants.selectors.zipCodeInput)
     await page.keyboard.type(constants.config.zipCode)
-    await page.waitForTimeout(500) //probably shouldn't be needed but it
+    await page.waitForTimeout(1000) //probably shouldn't be needed but it
 
     await page.click(constants.selectors.applyZipCodeButton)
     await page.waitForTimeout(500) //hack lol
