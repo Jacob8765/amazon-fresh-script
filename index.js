@@ -51,7 +51,7 @@ const CSVManager = require("./CSVManager");
                             let percentOff = parseInt(100 - parseFloat(newPrice) / parseFloat(slashedPrice) * 100)
                         const outOfStock = item.querySelector(constants.selectors.outOfStock) && true;
         
-                            if (!outOfStock && percentOff >= constants.config.minimumDiscount) { //select items that meet the minimum discount parameter
+                            if (!outOfStock && percentOff >= constants.config.minimumDiscount) { //select items that meet the minimum discount paramete
                                 let link = constants.config.baseURL + item.querySelector(constants.selectors.link).getAttribute("href")
                                 let name = item.querySelector(constants.selectors.name).innerText
                                 discountedProducts.push({link, name, slashedPrice, newPrice, percentOff})
