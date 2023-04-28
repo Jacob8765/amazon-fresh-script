@@ -15,7 +15,8 @@
         "slashedPrice": "[data-a-strike=true] > span",
         "price": "span.a-price > span.a-offscreen",
         "link": "h2 > a.a-link-normal",
-        "name": "h2 > a.a-link-normal > span"
+        "name": "h2 > a.a-link-normal > span",
+        "outOfStock": "span[aria-label='Out of Stock']"
     },
 
     "categoryLinks": [
